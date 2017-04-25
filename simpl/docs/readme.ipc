@@ -1,0 +1,41 @@
+This file is intended as a brief description of the SIMPL fcipc library.
+
+Installation:
+Before installing this stuff you will need to create two environment
+variables:
+	FIFO_PATH=<wherever you would like fifos to live>
+	SIMPL_HOME=<this is the root path to the "simpl" tree>
+		Note: SIMPL_HOME must terminate in a directory called "simpl"
+eg:
+	export FIFO_PATH=/home/fifo
+	export SIMPL_HOME=/home/simpl
+
+You can undo the gzip'd tar file as follows:
+cd $SIMPL_HOME
+cd ..
+<place the simpl.tar.gz file here>
+tar -zxvf simpl.tar.gz
+
+This will create a bunch of subdirectories of of $SIMPL_HOME containing all 
+of the source you will need.
+
+You may want to add $SIMPL_HOME/shells to your PATH variable to take advantage
+of lots of the scripts contained in there.   The most useful at this point
+will be:
+	$SIMPL_HOME/shells/buildsimpl
+
+It will perform a complete top level build of all the code in the simpl tree.
+
+Futher documentation you might want to read:
+$SIMPL_HOME/fcipc/src/readme   - description of the SIMPL fcipc library design
+$SIMPL_HOME/docs/readme.tcl    - how to enable the fctcl extension package
+$SIMPL_HOME/docs/readme.rcs    - how to use the SIMPL RCS script set
+$SIMPL_HOME/fclogger/test/src/readme - how to use the SIMPL trace logger module
+
+-------------------------
+FCsoftware Inc. 1998
+This code is released as open source.   We hope you find 
+it useful.  If you discover a bug or add an enhancement 
+contact us on the SIMPL project mailing list. 
+
+-------------------------

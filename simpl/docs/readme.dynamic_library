@@ -1,0 +1,38 @@
+This note contains the directions necessary for producing and using
+the dynamically linked SIMPL libraries.
+
+The following directories can produce dynamic (shared) libraries.
+	$SIMPL_HOME/simplipc/src - main SIMPL library
+	$SIMPL_HOME/fclogger/src - trace logger library
+	$SIMPL_HOME/simplUtils/src - a miscellaneous library
+
+Here are the steps to producing a dynamic library.
+
+1. Clean out the old library: 
+	make clobber
+
+2. Make new dynamic library
+	make dynamic
+
+
+Once these dynamic libraries have been built you need to 
+setup a path for the dynamic loader by editing
+	 /etc/ld.so.conf 
+
+and adding the line "simple library path". 
+
+"simple library path" may be something like 
+	/home/simpl/lib 
+
+where $SIMPL_HOME is /home/simpl.
+
+ie. wherever the *.so library files are
+located after a successful make dynamic. 
+
+Note that the exported variable 
+
+You must now update the /etc/ld.so.cache file by running the ldconfig
+utility. ldconfig 
+
+You should check that your libsimpl.so library has been added by
+running: ldconfig -p

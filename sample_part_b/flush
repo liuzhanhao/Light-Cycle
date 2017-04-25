@@ -1,0 +1,10 @@
+#!/bin/bash
+
+killall game_admin
+killall display_admin
+killall input_admin
+killall snake
+killall timer
+killall courier
+killall painter
+killall keyboard

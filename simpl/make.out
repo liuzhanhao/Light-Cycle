@@ -1,0 +1,387 @@
+Tue Jan 19 15:08:35 HKT 2010
+==================================================
+SIMPL_HOME = /uac/gds/thuang/software/simpl
+FIFO_PATH = /uac/gds/thuang/software/fifo
+SIMPL version:
+=========================
+Version: 3.2.1
+Created on: Mon May 12 20:44:24 EDT 2008
+=========================
+==================================================
+running make clobber
+==================================================
+SIMPL Top Level clobber starting
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/lib'
+simpl/lib clobber starting
+rm: cannot remove `libfctclx.*': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `libsimpl.*': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `libsimpllog.*': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `libsimplmisc.*': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+simpl/lib clobber
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/lib'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/bin'
+simpl/bin clobber starting
+rm: cannot remove `fclogger': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `fcshow': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `fcslay': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `tclSurrogate': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `protocolRouter': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `surrogateTcp': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+rm: cannot remove `dumpProtocolTable': No such file or directory
+make[1]: [clobber] Error 1 (ignored)
+simpl/bin clobber
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/bin'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc'
+SIMPL fclogger <clobber> starting
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/src'
+simpl clean/clobber
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/src'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/test'
+simplipc/test clobber
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/test'
+SIMPL fclogger <clobber> done
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils'
+SIMPL fcUtils <clobber> starting
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/src'
+simplUtils/src clobber
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/src'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/test'
+testbinstr clobber
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/test'
+SIMPL fcUtils <clobber> done
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates'
+SIMPL surrogate <clobber> starting
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router'
+SIMPL surrogate/protocol_router <clobber> starting
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router/src'
+protocolRouter clean/clobber
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router/src'
+SIMPL surrogate/protocol_router <clobber> done
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp'
+SIMPL surrogate/tcp <clobber> starting
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/src'
+surrogate clean/clobber
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/src'
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/test'
+test clean/clobber
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/test'
+SIMPL surrogate/tcp <clobber> done
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232'
+SIMPL surrogate/rs232 <clobber> starting
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232/src'
+surrogate clean/clobber
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232/src'
+SIMPL surrogate/rs232 <clobber> done
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232'
+SIMPL surrogate <clobber> done
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger'
+SIMPL fclogger <clobber> starting
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/src'
+fclogger clobber
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/src'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/test'
+fclogger test clobber
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/test'
+SIMPL fclogger <clobber> done
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/benchmarks/src'
+benchmark clobber
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/benchmarks/src'
+SIMPL TOP LEVEL clobber done
+==================================================
+running make install
+==================================================
+SIMPL Top Level Build install starting
+Tue Jan 19 15:08:42 HKT 2010
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc'
+SIMPL fclogger build <install> starting
+Tue Jan 19 15:08:42 HKT 2010
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/src'
+simpl starting
+mkdir ./obj
+chmod a+w ./obj
+mkdir ../lib
+chmod a+w ../lib
+cc  -c -D_LINUX_OS -fPIC -O -Wall -I../../include -o obj/simpl.o simpl.c
+cc  -c -D_LINUX_OS -fPIC -O -Wall -I../../include -o obj/simplUtils.o simplUtils.c
+simplUtils.c: In function ‘_simpl_log’:
+simplUtils.c:989: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result
+ar vrs ../lib/libsimpl.a obj/simpl.o obj/simplUtils.o	
+ar: creating ../lib/libsimpl.a
+a - obj/simpl.o
+a - obj/simplUtils.o
+cp ../lib/libsimpl.a ../../lib
+simpl install
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/src'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/test'
+simplipc/test build starting
+mkdir obj
+chmod a+w obj
+mkdir ../bin
+chmod a+w ../bin
+cc -c -O -Wall -I../../include -o obj/sender.o sender.c
+cc -o ../bin/sender obj/sender.o -L../../lib -lsimpl
+cc -c -O -Wall -I../../include -o obj/receiver.o receiver.c
+cc -o ../bin/receiver obj/receiver.o -L../../lib -lsimpl
+simplipc/test install
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc/test'
+SIMPL fclogger <install> done
+Tue Jan 19 15:08:44 HKT 2010
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplipc'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger'
+SIMPL fclogger build <install> starting
+Tue Jan 19 15:08:44 HKT 2010
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/src'
+fclogger build starting
+mkdir obj
+chmod a+w obj
+mkdir ../bin
+chmod a+w ../bin
+mkdir ../lib
+chmod a+w ../lib
+cc  -c  -Wall -I ../include -I ../../include -o obj/simplLogUtils.o simplLogUtils.c
+ar vrs ../lib/libsimpllog.a obj/simplLogUtils.o	
+ar: creating ../lib/libsimpllog.a
+a - obj/simplLogUtils.o
+cc -c  -Wall -I ../include -I ../../include -o obj/fclogger.o fclogger.c
+cc -o ../bin/fclogger obj/fclogger.o -L ../../lib -lsimpl
+cp ../bin/fclogger ../../bin/fclogger
+cp ../lib/libsimpllog.a ../../lib
+logger install
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/src'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/test'
+fclogger test build starting
+mkdir obj
+chmod a+w obj
+cc -c -I ../include -I ../../include -o obj/logit.o logit.c
+cc -o ../bin/logit obj/logit.o -L ../../lib -lsimpllog -lsimpl
+fclogger test install
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger/test'
+SIMPL fclogger <install> done
+Tue Jan 19 15:08:44 HKT 2010
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/fclogger'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils'
+SIMPL simplUtils build <install> starting
+Tue Jan 19 15:08:44 HKT 2010
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/src'
+simplUtils/src build starting
+mkdir obj
+chmod a+w obj
+mkdir ../bin
+chmod a+w ../bin
+mkdir ../lib
+chmod a+w ../lib
+cc -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/sandboxRelay.o sandboxRelay.c
+cc -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/sandboxRelayInit.o sandboxRelayInit.c
+cc -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/sandboxRelayUtils.o sandboxRelayUtils.c
+cc  -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/miscUtils.o miscUtils.c
+cc  -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/binstr.o binstr.c
+ar vrs ../lib/libsimplmisc.a obj/miscUtils.o obj/binstr.o	
+ar: creating ../lib/libsimplmisc.a
+a - obj/miscUtils.o
+a - obj/binstr.o
+cc -o ../bin/sandboxRelay ./obj/sandboxRelay.o ./obj/sandboxRelayInit.o ./obj/sandboxRelayUtils.o -L ../../lib -lsimpllog -lsimpl -L ../lib/ -lsimplmisc
+cc -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/dumpProtocolTable.o dumpProtocolTable.c
+cc -o ../bin/dumpProtocolTable obj/dumpProtocolTable.o -L../../lib -lsimpl
+cc -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/fcslay.o fcslay.c
+cc -o ../bin/fcslay obj/fcslay.o -L../../lib -lsimpl
+cc -c -D_LINUX_OS  -fPIC -Wall -I ../include -I ../../include -o obj/fcshow.o fcshow.c
+cc -o ../bin/fcshow obj/fcshow.o -L../../lib -lsimpl
+cp ../bin/sandboxRelay ../../bin
+cp ../bin/dumpProtocolTable ../../bin
+cp ../bin/fcslay ../../bin
+cp ../bin/fcshow ../../bin
+cp ../lib/libsimplmisc.a ../../lib
+simplUtils/src install
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/src'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/test'
+test bin hexc build starting
+mkdir obj
+chmod a+w obj
+cc -c  -Wall -I ../../include -o obj/testbinstr.o testbinstr.c
+cc -o ../bin/testbinstr obj/testbinstr.o -L../../lib -lsimplmisc
+testbinstr install
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils/test'
+SIMPL simplUtils <install> done
+Tue Jan 19 15:08:45 HKT 2010
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/simplUtils'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates'
+SIMPL surrogate build <install> starting
+Tue Jan 19 15:08:45 HKT 2010
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router'
+SIMPL surrogate/protocol_router build <install> starting
+Tue Jan 19 15:08:45 HKT 2010
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router/src'
+protocolRouter starting
+mkdir ./obj
+chmod a+w ./obj
+mkdir ../bin
+chmod a+w ../bin
+cc -c  -O -Wall -I../../../include -o obj/protocolRouter.o protocolRouter.c
+cc -o ../bin/protocolRouter obj/protocolRouter.o -L../../../lib -lsimpl
+cp ../bin/protocolRouter ../../../bin
+protocolRouter install
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router/src'
+SIMPL surrogate/protocol_router <install> done
+Tue Jan 19 15:08:45 HKT 2010
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/protocol_router'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp'
+SIMPL surrogate/tcp build <install> starting
+Tue Jan 19 15:08:45 HKT 2010
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/src'
+surrogate starting
+mkdir ./obj
+chmod a+w ./obj
+mkdir ../bin
+chmod a+w ../bin
+cc -c -DNOT_BUFFERED -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate.o surrogate.c
+cc -c -DNOT_BUFFERED -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogateInit.o surrogateInit.c
+cc -c -DNOT_BUFFERED -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_R.o surrogate_R.c
+cc -c -DNOT_BUFFERED -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_r.o surrogate_r.c
+cc -c -DNOT_BUFFERED -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_S.o surrogate_S.c
+surrogate_S.c: In function ‘surrogate_S’:
+surrogate_S.c:114: warning: pointer targets in passing argument 3 of ‘accept’ differ in signedness
+cc -c -DNOT_BUFFERED -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_s.o surrogate_s.c
+cc -c -DNOT_BUFFERED -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogateUtils.o surrogateUtils.c
+cc -o ../bin/surrogate ./obj/surrogate.o ./obj/surrogateInit.o ./obj/surrogate_R.o ./obj/surrogate_r.o ./obj/surrogate_S.o ./obj/surrogate_s.o ./obj/surrogateUtils.o -L../../../lib -lsimpl -lsimplmisc
+cp ../bin/surrogate ../../../bin/surrogateTcp
+surrogate install
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/src'
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/test'
+ln -fs receiver0.c receiver.c
+ln -fs sender0.c sender.c
+make install
+make[4]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/test'
+test starting
+mkdir ./obj
+chmod a+w ./obj
+cc -O2 -pipe -c -Wall -I../../../include -o obj/receiver.o receiver.c
+cc -o ../bin/receiver obj/receiver.o -O2 -pipe -L../../../lib -lsimpl -lsimplmisc
+cc -O2 -pipe -c -Wall -I../../../include -o obj/sender.o sender.c
+cc -o ../bin/sender obj/sender.o -O2 -pipe -L../../../lib -lsimpl -lsimplmisc
+cp go ../bin/
+cp stop ../bin/
+test all
+make[4]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/test'
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp/test'
+SIMPL surrogate/tcp <install> done
+Tue Jan 19 15:08:46 HKT 2010
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/tcp'
+make[2]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232'
+SIMPL surrogate/rs232 build <install> starting
+Tue Jan 19 15:08:46 HKT 2010
+make[3]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232/src'
+surrogate starting
+mkdir ./obj
+chmod a+w ./obj
+mkdir ../bin
+chmod a+w ../bin
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate.o surrogate.c
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogateInit.o surrogateInit.c
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_R.o surrogate_R.c
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_S.o surrogate_S.c
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_r.o surrogate_r.c
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogate_s.o surrogate_s.c
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/surrogateUtils.o surrogateUtils.c
+cc -o ../bin/surrogate ./obj/surrogate.o ./obj/surrogateInit.o ./obj/surrogate_R.o ./obj/surrogate_S.o ./obj/surrogate_r.o ./obj/surrogate_s.o ./obj/surrogateUtils.o -L../../../lib -lsimpl -lsimplmisc
+cc -c -DSUR_CHR -O -Wall -I../../../include -I../include -o obj/rs232_rw.o rs232_rw.c
+cc -o ../bin/rs232_rw ./obj/rs232_rw.o -L../../../lib -lsimpl -lsimplmisc
+cp ../bin/surrogate ../../../bin/surrogateRS232
+cp ../bin/rs232_rw ../../../bin/rs232_rw
+surrogate install
+make[3]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232/src'
+SIMPL surrogate/rs232 <install> done
+Tue Jan 19 15:08:47 HKT 2010
+make[2]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates/rs232'
+SIMPL surrogate <install> done
+Tue Jan 19 15:08:47 HKT 2010
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/surrogates'
+make[1]: Entering directory `/net/magellan/d3/data/gds/thuang/software/simpl/benchmarks/src'
+benchmark build starting
+whichOS = _THISIS_LINUX
+mkdir obj
+chmod a+w obj
+mkdir ../bin
+chmod a+w ../bin
+cc -c -Wall -I ../include -I /uac/gds/thuang/software/simpl/include -D_THISIS_LINUX -D_SIMPLIPC -o obj/sender.o sender.c
+cc -o ../bin/sender obj/sender.o -L /uac/gds/thuang/software/simpl/lib -lsimpl -lsimplmisc
+cc -c -Wall -I ../include -I /uac/gds/thuang/software/simpl/include -D_THISIS_LINUX -D_SIMPLIPC -o obj/receiver.o receiver.c
+receiver.c: In function ‘initialize’:
+receiver.c:243: warning: the address of ‘myName’ will always evaluate as ‘true’
+cc -o ../bin/receiver obj/receiver.o -L /uac/gds/thuang/software/simpl/lib -lsimpl -lsimplmisc
+benchmark install
+make[1]: Leaving directory `/net/magellan/d3/data/gds/thuang/software/simpl/benchmarks/src'
+SIMPL TOP LEVEL install done
+Tue Jan 19 15:08:47 HKT 2010
+==================================================
+/uac/gds/thuang/software/simpl/bin
+==================================================
+snapshot of /uac/gds/thuang/software/simpl/bin using "ls -tl"
+==================================================
+total 333
+-rwx------ 1 thuang gds 41764 2010-01-19 15:08 rs232_rw
+-rwx------ 1 thuang gds 51473 2010-01-19 15:08 surrogateRS232
+-rwx------ 1 thuang gds 52297 2010-01-19 15:08 surrogateTcp
+-rwx------ 1 thuang gds 36725 2010-01-19 15:08 protocolRouter
+-rwx------ 1 thuang gds 11681 2010-01-19 15:08 fcshow
+-rwx------ 1 thuang gds 15835 2010-01-19 15:08 fcslay
+-rwx------ 1 thuang gds 36584 2010-01-19 15:08 dumpProtocolTable
+-rwx------ 1 thuang gds 51127 2010-01-19 15:08 sandboxRelay
+-rwx------ 1 thuang gds 36688 2010-01-19 15:08 fclogger
+-rw------- 1 thuang gds  1130 2005-03-27 19:50 Makefile
+-rw------- 1 thuang gds    29 2005-03-27 19:50 trigger
+==================================================
+snapshot of /uac/gds/thuang/software/simpl/bin using "cksum *"
+==================================================
+2756592433 36584 dumpProtocolTable
+2905646507 36688 fclogger
+1684520007 11681 fcshow
+1713348609 15835 fcslay
+556637648 1130 Makefile
+3527775227 36725 protocolRouter
+1732850124 41764 rs232_rw
+1236383171 51127 sandboxRelay
+3274299043 51473 surrogateRS232
+4289560472 52297 surrogateTcp
+2252020377 29 trigger
+==================================================
+/uac/gds/thuang/software/simpl/lib
+==================================================
+snapshot of /uac/gds/thuang/software/simpl/lib using "ls -tl"
+==================================================
+total 61
+-rw------- 1 thuang gds  9904 2010-01-19 15:08 libsimplmisc.a
+-rw------- 1 thuang gds  7534 2010-01-19 15:08 libsimpllog.a
+-rw------- 1 thuang gds 39600 2010-01-19 15:08 libsimpl.a
+-rw------- 1 thuang gds   616 2006-08-16 04:55 pkgIndex.tcl.fcsocket
+-rw------- 1 thuang gds   536 2006-08-16 04:55 pkgIndex.tcl.fctclx
+-rw------- 1 thuang gds   959 2005-03-27 19:50 Makefile
+-rw------- 1 thuang gds    29 2005-03-27 19:50 trigger
+==================================================
+snapshot of /uac/gds/thuang/software/simpl/lib using "cksum *"
+==================================================
+2589443349 39600 libsimpl.a
+1503796692 7534 libsimpllog.a
+2489767964 9904 libsimplmisc.a
+612561788 959 Makefile
+1605329013 616 pkgIndex.tcl.fcsocket
+1349899679 536 pkgIndex.tcl.fctclx
+2252020377 29 trigger
+==================================================
+Tue Jan 19 15:08:47 HKT 2010
+==================================================

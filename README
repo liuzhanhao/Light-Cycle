@@ -1,0 +1,61 @@
+--------------------------------------------
+A. Setting up SIMPL
+--------------------------------------------
+
+1. Extract the Package. Under Linux:
+
+   cd $HOME
+   tar -zxvf simpl.tar.gz
+
+Note, it will create the directory $HOME/simpl
+
+2. Create the directory where FIFOs live
+   (Required by the SIMPL library)
+
+   mkdir $HOME/fifo
+
+3. Set up FIFO_PATH environment variable by adding these to your .cshrc
+
+   setenv SIMPL_HOME $HOME/simpl
+   setenv FIFO_PATH $HOME/fifo 
+
+TIPS: The SIMPL library make use of the FIFO_PATH to store 
+temporary files during the messaging. When you encounter strange problem 
+while running the programs, just quite your program (i.e. press Ctrl-C).
+Check if you got some useless processes by:
+
+  ps -u <username>
+
+KILL all the useless processes by:
+
+  killall <process name>
+
+and clean up the directory pointed by FIFO_PATH by:
+
+  rm -f $FIFO_PATH/*
+
+
+
+--------------------------------------------
+B. Executing the sample programs
+--------------------------------------------
+
+1. Sample program of Part A
+
+   You can run the sample by:
+
+    ./animate   
+
+2. Sample program of Part B
+
+   You can run the game under Linux with default parameters by:
+
+    ./run -d
+
+  Note, you can type ./run without any arguments to see the list of options.
+  If you encounter some problem while running the game and pressed Ctrl-C, 
+  you can use the following scripts clean up those useless processes:
+
+    ./flush
+
+  Enjoy the game!

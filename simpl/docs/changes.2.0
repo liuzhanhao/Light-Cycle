@@ -1,0 +1,73 @@
+==========================
+SIMPL 2.0rcX changes
+==========================
+
+SIMPL scripts:
+I) the shells directory has been obsoleted in favor of a more descriptive
+scripts directory
+
+II) the RCS and virtual tree scripts have been separated out from main 
+SIMPL tarball.   These will be published separately on SIMPL website.
+
+=================
+
+SIMPL core:
+
+SIMPL 2.0 incorporates several changes to the basic SIMPL core structures.
+
+a) The fcipc slot table and lock file system has been obsoleted in favor of 
+a composite fifo name in the $FIFO_PATH directory
+
+b) The fcipc compatibility library has now been totally obsoleted.  The 
+major feature of that library ... the ability to view the shared memory
+contents without actually memcpy'g it first ... has been incorporated
+into the main API as a revised Receive() call.
+
+c) The name_attach() call no longer requires a buffer size parameter.
+SIMPL now manages shared memory by pages and the allocation is done with
+Send() call.   
+
+d) Receive() has a substantially revised prototype 
+			
+	int Receive(char *id, void *inbuff, unsigned maxbytes)
+
+where the nbytes are returned and
+
+	inbuff parameter can be NULL which means no memcpy required
+
+e) name_locate() has a new prototype
+
+	int name_locate(char *SIMPLname)
+
+where the fd to the fifo described by SIMPLname is returned
+
+f) Send() has a new prototype
+			
+	int Send(int fd, void *outbuff, void *inbuff, unsigned outbytes, unsigned inbytes);
+
+where fd is the value returned by the name_locate() call.
+
+==================
+
+SIMPL licencing:
+
+SIMPL remains a perfectly viable tool for commercial software without any
+requirement for licences or royalties.
+
+i) core SIMPL stays as LGPL
+
+ii) utilities such as tclSurrogate, fclogger, fcslay etc have been 
+relicence under simple public licence to insure compatibility with commerical
+software.
+
+==================
+
+SIMPL networking:
+
+A) nameloc surrogates are obsoleted.
+
+B) protocol_router framework has been introduced.   The only protocol currently
+supported is still TCP/IP sockets.   The framework is more general and new
+protocols can be added going forward.
+
+
