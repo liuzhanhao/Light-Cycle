@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
                         rand() % (reply.upperBound - reply.lowerBound + 1);
         printf("Guessing %d\n", msg.guess);
         /* The bounds in 'reply' will be updated */
+        // fd = name_locate("Admin")) defined below
         if (Send(fd, &msg, &reply, sizeof(msg), sizeof(reply)) == -1) {
             fprintf(stderr, "Cannot send message!\n");
             exit(0);

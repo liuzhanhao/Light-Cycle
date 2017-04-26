@@ -6,12 +6,16 @@ INCL_DIR=${SIMPL_DIR}/include
 CDFLAGS=-c -Wall -I ${INCL_DIR} -D${OS} -D${VER}
 LDFLAGS=-L ${SIMPL_DIR}/lib -lsimpl 
 LIBS=-lcurses
-SOURCES = display_admin game_admin cycle timer courier painter input_admin keyboard
+#SOURCES = animate display_admin game_admin cycle timer courier painter input_admin keyboard
+SOURCES = animate
 
 all: ${SOURCES}
 
 %.o: %.c
 	${CC} ${CDFLAGS} $? -o $@
+
+animate: animate.o
+	${CC} $? -o $@ ${LIBS}
 
 timer: timer.o
 	${CC} $? -o $@ ${LDFLAGS}
