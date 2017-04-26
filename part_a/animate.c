@@ -37,19 +37,9 @@ enum {NONE_COL = 1, CYCLE_COL, LIGHT_COL, BOUNDARY_COL};	// color pairs
 void assigncolors() {
 	init_pair(NONE_COL, COLOR_WHITE, COLOR_BLACK);
 	init_pair(CYCLE_COL, COLOR_RED, COLOR_BLACK);
-	init_pair(LIGHT_COL, COLOR_RED, COLOR_BLACK);
+	init_pair(LIGHT_COL, COLOR_RED, COLOR_RED);
 	init_pair(BOUNDARY_COL, COLOR_WHITE, COLOR_WHITE);
 }
-
-/*
-CYCLE create_cycle(COORDINATE pos, DIRECTION dir) 
-{
-	CYCLE c;
-	c.pos = pos;
-	c.dir = dir;
-	return c;
-}*/
-
 
 void init_screen()
 {
@@ -94,7 +84,6 @@ void init_screen()
 void draw_map()
 {
     int x, y, maxx, maxy;
-    char ch;
 
     getmaxyx(stdscr, maxy, maxx);
     int margin_x = cycle.pos.x - maxx / 2;
@@ -109,143 +98,37 @@ void draw_map()
             if ((x + margin_x >=  MAX_WIDTH) | (x + margin_x < 0) | (y + margin_y >= MAX_HEIGHT) | (y + margin_y < 0))
             {
             	color_set(NONE_COL, NULL);
-                ch = ' ';
+                addch(' ');
             }
             else if (arena[x + margin_x][y + margin_y] == NONE)
             {
             	color_set(NONE_COL, NULL);
-                ch = ' ';
+                addch(' ');
             }
             else if (arena[x + margin_x][y + margin_y] == REDCYCLE)
             {
             	color_set(CYCLE_COL, NULL);
-                ch = '@';
+                addch('@' | A_BOLD);
             }
             else if (arena[x + margin_x][y + margin_y] == LIGHT)
             {
             	color_set(LIGHT_COL, NULL);
-                ch = 'L';
+                addch(' ');
             }
             else if (arena[x + margin_x][y + margin_y] == BOUNDARY)
             {
             	color_set(BOUNDARY_COL, NULL);
-                ch = ' ';
+                addch(' ');
             }
             else
             {
             	color_set(CYCLE_COL, NULL);
-                ch = '?';
+                addch('?');
             }
-
-            addch(ch);
         }
     }
     move(0, 0);
     refresh();
-}
-
-// remain_dir = EAST = 1, SOUTH = 2, WEST = 3, NORTH = 4
-int move_cycle(CYCLE* c)
-{
-    DIRECTION dir = c->dir;
-    arena[c->pos.x][c->pos.y] = LIGHT;
-
-    if (dir == EAST)
-    {
-        if (arena[c->pos.x + 1][c->pos.y] != NONE)
-        {
-            if (arena[c->pos.x][c->pos.y+1] == NONE)
-            {
-                c->dir = SOUTH;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x-1][c->pos.y] == NONE)
-            {
-                c->dir = WEST;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x][c->pos.y-1] == NONE)
-            {
-                c->dir = NORTH;
-                return move_cycle(c);
-            }
-            return 0;
-        }
-    	arena[++c->pos.x][c->pos.y] = REDCYCLE;
-    }
-    else if (dir == SOUTH)
-    {
-        if (arena[c->pos.x][c->pos.y + 1] != NONE)
-        {
-            if (arena[c->pos.x + 1][c->pos.y] == NONE)
-            {
-                c->dir = EAST;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x-1][c->pos.y] == NONE)
-            {
-                c->dir = WEST;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x][c->pos.y-1] == NONE)
-            {
-                c->dir = NORTH;
-                return move_cycle(c);
-            }
-            return 0;
-        }
-    	arena[c->pos.x][++c->pos.y] = REDCYCLE;
-    }
-    else if (dir == WEST)
-    {
-        if (arena[c->pos.x - 1][c->pos.y] != NONE)
-        {
-            if (arena[c->pos.x][c->pos.y+1] == NONE)
-            {
-                c->dir = SOUTH;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x + 1][c->pos.y] == NONE)
-            {
-                c->dir = EAST;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x][c->pos.y-1] == NONE)
-            {
-                c->dir = NORTH;
-                return move_cycle(c);
-            }
-            return 0;
-        }
-    	arena[--c->pos.x][c->pos.y] = REDCYCLE;
-    }
-    else if (dir == NORTH)
-    {
-        if (arena[c->pos.x][c->pos.y - 1] != NONE)
-        {
-            if (arena[c->pos.x][c->pos.y+1] == NONE)
-            {
-                c->dir = SOUTH;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x-1][c->pos.y] == NONE)
-            {
-                c->dir = WEST;
-                return move_cycle(c);
-            }
-            else if (arena[c->pos.x + 1][c->pos.y] == NONE)
-            {
-                c->dir = EAST;
-                return move_cycle(c);
-            }
-            return 0;
-        }
-    	arena[c->pos.x][--c->pos.y] = REDCYCLE;
-    }
-
-    clear();
-   	draw_map();
-    return 1;
 }
 
 // check if the cycle can move to that direction
@@ -262,15 +145,50 @@ bool check(CYCLE c, DIRECTION dir)
     return false;
 }
 
+// remain_dir = EAST = 1, SOUTH = 2, WEST = 3, NORTH = 4
+bool move_cycle(CYCLE* c)
+{
+    DIRECTION dir = c->dir;
+    arena[c->pos.x][c->pos.y] = LIGHT;
+
+    if (!check(*c, dir))
+    {
+        int i;
+        for (i = 0; i < 4; i++)
+            if (dir != i && check(*c, i))
+                break;
+
+        if (i < 4)
+        {
+            c->dir = i;
+            return move_cycle(c);
+        }
+        else    
+            return false;
+    }
+    else if (dir == EAST)
+    	arena[++c->pos.x][c->pos.y] = REDCYCLE;
+    else if (dir == SOUTH)
+    	arena[c->pos.x][++c->pos.y] = REDCYCLE;
+    else if (dir == WEST)
+    	arena[--c->pos.x][c->pos.y] = REDCYCLE;
+    else if (dir == NORTH)
+    	arena[c->pos.x][--c->pos.y] = REDCYCLE;
+
+    clear();
+   	draw_map();
+    return true;
+}
+
 void pick_an_direction(CYCLE *c)
 {
     int x = c->pos.x, y = c->pos.y;
     // if all direction is unreachable, break
-    if (arena[x+1][y] != NONE || arena[x][y+1] != NONE || arena[x-1][y] != NONE || arena[x][y] != NONE)
+    if (arena[x+1][y] != NONE || arena[x][y+1] != NONE || arena[x-1][y] != NONE || arena[x][y-1] != NONE)
     {
-        DIRECTION old_dir = c->dir;
+        //DIRECTION old_dir = c->dir;
         DIRECTION new_dir = rand() % 4;
-        while (new_dir == old_dir || !check(cycle, new_dir))
+        while (!check(*c, new_dir))
         {
             new_dir = rand() % 4;
         }
@@ -284,7 +202,7 @@ int main(int argc, char *argv[])
 
 	init_screen();
 	draw_map();
-    int flag = 1;
+    bool flag = true;
     while(flag)
     {
         usleep(50000);
@@ -294,7 +212,7 @@ int main(int argc, char *argv[])
             pick_an_direction(&cycle);
     }
 
-	sleep(3);
+	sleep(1);
 	endwin();
     printf("Game Over!\n");
 	return 0;
