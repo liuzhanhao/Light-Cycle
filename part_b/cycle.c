@@ -1,15 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
+//#include <string.h>
+//#include <time.h>
 #include <unistd.h>
 #include "simpl.h"
+#include <stdbool.h>
 #include "message.h"
+
+int cycleId;
+ARENA arena;
+CYCLE mycycle, oppocycle;
+DIRECTION dir;
+
+// check if dir is reachable for mycycle
+bool check(DIRECTION dir)
+{
+    if (dir == EAST)
+        return arena.wall[mycycle.pos.x+1][mycycle.pos.y] == NONE && !((mycycle.pos.x+1 == oppocycle.pos.x) && (mycycle.pos.y == oppocycle.pos.y));
+    else if (dir == SOUTH)
+        return arena.wall[mycycle.pos.x][mycycle.pos.y+1] == NONE && !((mycycle.pos.x == oppocycle.pos.x) && (mycycle.pos.y+1 == oppocycle.pos.y));
+    else if (dir == WEST)
+        return arena.wall[mycycle.pos.x-1][mycycle.pos.y] == NONE && !((mycycle.pos.x-1 == oppocycle.pos.x) && (mycycle.pos.y == oppocycle.pos.y));
+    else if (dir == NORTH)
+        return arena.wall[mycycle.pos.x][mycycle.pos.y-1] == NONE && !((mycycle.pos.x == oppocycle.pos.x) && (mycycle.pos.y-1 == oppocycle.pos.y));
+    return false;
+}
 
 
 int main(int argc, char* argv[]) {
-    int fd, cycleId;
-    CYCLE c;
+    int fd;
     MESSAGE msg, reply;
 
     char name[] = "Cycle ?";
@@ -44,74 +63,55 @@ int main(int argc, char* argv[]) {
         exit(0);
     }
 
+    msg.type = CYCLE_READY;
+    msg.cycleId = cycleId;
+    if (Send(fd, &msg, &reply, sizeof(msg), sizeof(reply)) == -1) {
+            fprintf(stderr, "Cannot send CYCLE_READY message!\n");
+        }
+
     while (reply.type != END)
     {
-        msg.type = CYCLE_READY;
-        msg.cycleId = cycleId;
-        if (Send(fd, &msg, &reply, sizeof(msg), sizeof(reply)) == -1) {
-                fprintf(stderr, "Cannot send CYCLE_READY message!\n");
-            }
-
         if (reply.type == START)
         {
-            fprintf(stderr, "Dont know what to start!\n");
-            sleep(1);
-            if (cycleId == 0)
-            {
-                c.pos.x = MAX_WIDTH * 0.35f;
-                c.pos.y = MAX_HEIGHT / 2;
-                c.dir = EAST;
-
-                reply.arena.cycle[0] = c;
-            }
-            else if (cycleId == 1)
-            {
-                c.pos.x = MAX_WIDTH * 0.65f;
-                c.pos.y = MAX_HEIGHT / 2;
-                c.dir = WEST;
-                
-                reply.arena.cycle[1] = c;
-            }
-        }
-
-        else if (reply.type == MOVE)
-        {
-            //fprintf(stderr, "Dont know what to move!\n");
+            //fprintf(stderr, "Dont know what to start!\n");
             //sleep(1);
-            if (reply.boost == YES)
-                usleep(10000);
-            else if (reply.boost == NO)
-                usleep(50000);
-
-            cycleId = reply.cycleId;
-            c = reply.arena.cycle[cycleId];
-
-            if (cycleId == 0)
-                reply.arena.wall[reply.arena.cycle[cycleId].pos.x][reply.arena.cycle[cycleId].pos.y] = REDCYCLE;
-            else if (cycleId == 1)
-                reply.arena.wall[reply.arena.cycle[cycleId].pos.x][reply.arena.cycle[cycleId].pos.y] = GREENCYCLE;
-
-            c.dir = reply.dir;
-            if (c.dir == EAST)
-                reply.arena.cycle[cycleId].pos.x = ++c.pos.x;
-            else if (c.dir == SOUTH)
-                reply.arena.cycle[cycleId].pos.y = ++c.pos.y;
-            else if (c.dir == WEST)
-                reply.arena.cycle[cycleId].pos.x = --c.pos.x;
-            else if (c.dir == NORTH)
-                reply.arena.cycle[cycleId].pos.y = --c.pos.y;
-
-            reply.arena.cycle[cycleId].dir = c.dir;
+            arena = reply.arena;
+            mycycle = arena.cycle[cycleId];
+            oppocycle = arena.cycle[1 - cycleId];
         }
-
+        
         else if (reply.type == UPDATE)
         {
             //fprintf(stderr, "Dont know what to update!\n");
-            c.pos.x = reply.arena.cycle[cycleId].pos.x;
-            c.pos.y = reply.arena.cycle[cycleId].pos.y;
-            c.dir = reply.arena.cycle[cycleId].dir;
+            arena = reply.arena;
+            mycycle = arena.cycle[cycleId];
+            oppocycle = arena.cycle[1 - cycleId];
             //sleep(1);
         }
+
+        // MOVE
+        if (check(mycycle.dir))
+            dir = mycycle.dir;
+        else
+        {
+            int i;
+            for (i = 0; i < 4; i++)
+                if (mycycle.dir != i && check(i))
+                    break;
+
+            if (i < 4)
+                dir = i;
+            else    
+                dir = mycycle.dir;
+        }
+        msg.type = MOVE;
+        msg.dir = dir;
+        msg.cycleId = cycleId;
+        msg.boost = NO;
+
+        if (Send(fd, &msg, &reply, sizeof(msg), sizeof(reply)) == -1) {
+                fprintf(stderr, "Cannot send MOVE message in cycle.c!\n");
+            }
     }
 
     if (name_detach() == -1) {
