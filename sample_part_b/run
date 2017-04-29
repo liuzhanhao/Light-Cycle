@@ -2,6 +2,22 @@
 #
 # help_run() To print help
 #
+
+intexit() {
+    # Kill all subprocesses (all processes in the current process group)
+    kill -HUP -$$
+}
+
+hupexit() {
+    # HUP'd (probably by intexit)
+    echo
+    echo "Interrupted"
+    exit
+}
+
+trap hupexit HUP
+trap intexit INT
+
 help_run()
 {
   echo "Usage: $0 -m -d"

@@ -20,7 +20,6 @@ int main(int argc, char* argv[]) {
     courierId = name[8] - '0';
 
     if (courierId == 2) {
-        //printf("hahaha\n");
         if (name_attach(name, NULL) == -1) {
             fprintf(stderr, "Cannot attach name Courier 2 in courier.c!\n");
             exit(0);
@@ -81,29 +80,20 @@ int main(int argc, char* argv[]) {
             }
         }
 
-
-        printf("receive end message\n");
         msg.type = END;
         msg.cycleId = reply_game.cycleId;
         msg.arena = reply_game.arena;
         if (Send(fd_display, &msg, &reply_display, sizeof(msg), sizeof(reply_display)) == -1) {
             fprintf(stderr, "Cannot send END message!\n");
         }
-        //printf("sent end message\n");
 
         while (reply_display.type != OKAY)
         {
             // wait
         }
-
-        if (name_detach() == -1) {
-            fprintf(stderr, "Cannot detach COURIER name!\n");
-            exit(0);
-        }
     }
 
     else if (courierId == 0 || courierId == 1) {
-
         if (name_attach(name, NULL) == -1) {
             fprintf(stderr, "Cannot attach name Courier 0/1 in courier.c!\n");
             exit(0);
@@ -142,47 +132,47 @@ int main(int argc, char* argv[]) {
             fprintf(stderr, "Cannot send COURIER_READY message!\n");
         }
 
-        while (reply_input.type != END) {
-            if (reply_input.type == REGISTER_HUMAN) {
-                msg.type = REGISTER_HUMAN;
-                if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
-                    fprintf(stderr, "Cannot send REGISTER_HUMAN message!\n");
-                }
-
-                if (reply_game.type == INIT) {
-                    msg.type = INIT;
-                    msg.humanId = reply_game.humanId;
-                    if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
-                        fprintf(stderr, "Cannot send INIT message in courier.c!\n");
-                    }
-                }
-                else if (reply_game.type == FAIL) {
-                    msg.type = FAIL;
-                    if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
-                        fprintf(stderr, "Cannot send FAIL message in courier.c!\n");
-                    }
-                }
+        if (reply_input.type == REGISTER_HUMAN) {
+            msg.type = REGISTER_HUMAN;
+            if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
+                fprintf(stderr, "Cannot send REGISTER_HUMAN message!\n");
             }
 
-            if (reply_input.type == HUMAN_READY) {
-                msg.type = HUMAN_READY;
-                msg.humanId = reply_input.humanId;
-                if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
-                    fprintf(stderr, "Cannot send HUMAN_READY message in courier.c!\n");
-                }
-
-                if (reply_game.type == START)
-                {
-                    msg.type = START;
-                    msg.humanId = reply_game.humanId;
-
-                    if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
-                        fprintf(stderr, "Cannot send START message in courier.c!\n");
-                    }
+            if (reply_game.type == INIT) {
+                msg.type = INIT;
+                msg.humanId = reply_game.humanId;
+                if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
+                    fprintf(stderr, "Cannot send INIT message in courier.c!\n");
                 }
             }
+            else if (reply_game.type == FAIL) {
+                msg.type = FAIL;
+                if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
+                    fprintf(stderr, "Cannot send FAIL message in courier.c!\n");
+                }
+                exit(0);
+            }
+        }
 
+        if (reply_input.type == HUMAN_READY) {
+            msg.type = HUMAN_READY;
+            msg.humanId = reply_input.humanId;
+            if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
+                fprintf(stderr, "Cannot send HUMAN_READY message in courier.c!\n");
+            }
 
+            if (reply_game.type == START)
+            {
+                msg.type = START;
+                msg.humanId = reply_game.humanId;
+
+                if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
+                    fprintf(stderr, "Cannot send START message in courier.c!\n");
+                }
+            }
+        }
+
+        while (reply_game.type != END) {
             if (reply_input.type == HUMAN_MOVE) {
                 msg.type = HUMAN_MOVE;
                 msg.humanId = reply_input.humanId;
@@ -191,36 +181,28 @@ int main(int argc, char* argv[]) {
                 if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
                     fprintf(stderr, "Cannot send HUMAN_MOVE message in courier.c!\n");
                 }
+            }
 
-                if (reply_game.type == UPDATE)
-                {
-                    msg.type = UPDATE;
-                    msg.humanId = reply_game.humanId;
+            if (reply_game.type == UPDATE){
+                msg.type = UPDATE;
+                msg.humanId = reply_game.humanId;
 
-                    if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
-                        fprintf(stderr, "Cannot send UPDATE message in courier.c!\n");
-                    }
-
-                    while (reply_game.type == OKAY)
-                    {
-                        // wait the OKAY message
-                    }
-                }
-
-                else if (reply_game.type == END)
-                {
-                    msg.type = END;
-                    if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
-                        fprintf(stderr, "Cannot send END message in courier.c!\n");
-                    }
+                if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
+                    fprintf(stderr, "Cannot send UPDATE message in courier.c!\n");
                 }
             }
         }
 
-        if (name_detach() == -1) {
+        msg.type = END;
+        if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
+            fprintf(stderr, "Cannot send END message in courier.c!\n");
+        }
+    }
+
+    if (name_detach() == -1) {
             fprintf(stderr, "Cannot detach COURIER name!\n");
             exit(0);
         }
-    }
+    
     return 0;
 }

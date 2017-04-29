@@ -7,21 +7,11 @@
 
 
 int main(int argc, char* argv[]) {
-    int target, lowerBound, upperBound;
+
     char *fromWhom = NULL;
     MESSAGE msg, reply;
 
-    /* Randomly pick a target number */
-    srand(time(NULL));
-    target = rand() % 100;
-    printf("Target is %d.\n", target);
-
-    /* Initial bounds */
-    lowerBound = 0;
-    upperBound = 99;
-    printf("Bounds = [%d, %d]\n", lowerBound, upperBound);
-
-    if (name_attach("Admin", NULL) == -1) {
+    if (name_attach("Display_Admin", NULL) == -1) {
         fprintf(stderr, "Cannot attach name!\n");
         exit(0);
     }
