@@ -139,7 +139,15 @@ int main(int argc, char* argv[]) {
         }
     }
     
-    //printf("Painter end of use!\n");
+    //reply.type == END
+    draw_map(reply.arena);
+    if (reply.cycleId == 0)
+        fprintf(stderr, "*        RED wins the game!        *\n");
+    else if (reply.cycleId == 1)
+        fprintf(stderr, "*        GREEN wins the game!        *\n");
+    else if (reply.cycleId == 0)
+        fprintf(stderr, "*        It's a draw!        *\n");
+    
 
     if (name_detach() == -1) {
         fprintf(stderr, "Cannot detach PAINTER name!\n");
