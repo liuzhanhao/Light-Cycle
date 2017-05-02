@@ -1,3 +1,22 @@
+/*
+* CSCI3180 Principles of Programming Languages
+*
+* --- Declaration ---
+*
+* I declare that the assignment here submitted is original except for source
+* material explicitly acknowledged. I also acknowledge that I am aware of
+* University policy and regulations on honesty in academic work, and of the
+* disciplinary guidelines and procedures applicable to breaches of such policy
+* and regulations, as contained in the website
+* http://www.cuhk.edu.hk/policy/academichonesty/
+*
+* Assignment 5A
+* Name : Liu Zhan Hao
+* Student ID : 1155092201
+* Email Addr : zhliu6@cse.cuhk.edu.hk
+*/
+
+
 #include <ncurses.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -55,20 +74,12 @@ void init_screen()
     // initialize all block to be blank
     for(i = 0; i < MAX_WIDTH; i++)
     	for (j = 0; j < MAX_HEIGHT; j++)
-    		arena[i][j] = NONE;
-
-    // initialize the boundary
-    for(i = 0; i < MAX_WIDTH; i++)
-    {
-        arena[i][0] = BOUNDARY;
-        arena[i][MAX_HEIGHT-1] = BOUNDARY;
-    }
-
-    for(i = 0; i < MAX_HEIGHT; i++)
-    {
-        arena[0][i] = BOUNDARY;
-        arena[MAX_WIDTH-1][i] = BOUNDARY;
-    }
+        {
+            if (i == 0 || j == 0 || i == MAX_WIDTH-1 || j == MAX_HEIGHT-1)
+                arena[i][j] = BOUNDARY;
+            else
+    		  arena[i][j] = NONE;
+        }
 
     clear();
 
