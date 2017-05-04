@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
         msg.type = REGISTER_COURIER;
 
         if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
-            fprintf(stderr, "Cannot send message to Input_Admin in courier.c!\n");
+            fprintf(stderr, "Cannot send message to Input_Admin in courier 0 or 1!\n");
         }
 
 
