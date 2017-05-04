@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
         msg.type = REGISTER_COURIER;
 
         if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
-            fprintf(stderr, "Cannot send message to Game_Admin in courier.c!\n");
+            fprintf(stderr, "Cannot send message to Game_Admin in courier 2!\n");
         }
 
 

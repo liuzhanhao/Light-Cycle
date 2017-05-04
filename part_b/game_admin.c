@@ -6,27 +6,35 @@
 #include "simpl.h"
 #include "message.h"
 
+// fifo used to store the move msg and the cycle's address
+typedef struct { 
+    MESSAGE msg;
+    char *fromWhom;
+    int id;
+    int human_flag;
+} MOVE_MSG;
+
 char *fromWhom = NULL;
 char *timer_pt = NULL;
 char *cycle_pt[2] = {NULL, NULL};
 char *courier_pt[3] = {NULL, NULL, NULL};
 ARENA arena;
 MESSAGE msg, reply, msg_temp;
-MESSAGE fifo_msg[20];
+MOVE_MSG fifo_move[20];
 ARENA fifo[20];
-int fifo_size = 0, fi = 0, fifo_msg_size = 0, fi_msg = 0;
-int nCycle = 0, timer_flag = 0, courier_flag = 0;
+int fifo_size = 0, fi = 0, fifo_move_size = 0, fi_move = 0;
+int nCycle = 0, timer_flag = 0, courier2_flag = 0;
 int cycle_ready[2] = {0, 0}, timer_ready = 0, courier2_ready = 0;
 
 
 COORDINATE generate_pos(int nCycle){
     COORDINATE pos;
     if (nCycle == 0){
-        pos.x = MAX_WIDTH * 0.35f; 
+        pos.x = MAX_WIDTH * 0.30f; 
         pos.y = MAX_HEIGHT / 2;
     }
     else if (nCycle == 1){
-        pos.x = MAX_WIDTH * 0.65f; 
+        pos.x = MAX_WIDTH * 0.70f; 
         pos.y = MAX_HEIGHT / 2;
     }
     else
@@ -45,6 +53,11 @@ void generate_wall(){
             else
                 arena.wall[i][j] = NONE;
         }
+}
+
+
+int check_end(){
+    return arena.wall[arena.cycle[0].pos.x][arena.cycle[0].pos.y] != NONE || arena.wall[arena.cycle[1].pos.x][arena.cycle[1].pos.y] != NONE || (arena.cycle[0].pos.x == arena.cycle[1].pos.x && arena.cycle[0].pos.y == arena.cycle[1].pos.y);
 }
 
 
@@ -72,11 +85,6 @@ void move(int cycleId, DIRECTION dir){
 }
 
 
-int check_end(){
-    return arena.wall[arena.cycle[0].pos.x][arena.cycle[0].pos.y] != NONE || arena.wall[arena.cycle[1].pos.x][arena.cycle[1].pos.y] != NONE;
-}
-
-
 int get_winner(){
     // to improve
     if (arena.cycle[0].pos.x == arena.cycle[1].pos.x && arena.cycle[0].pos.y == arena.cycle[1].pos.y)
@@ -96,7 +104,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-    int end_flag = 0, move_flag = 0, move_ready = 0;
+    int start_flag = 0, end_flag = 0;
     while (1){
         if (Receive(&fromWhom, &msg, sizeof(msg)) == -1) {
             fprintf(stderr, "Cannot receive message in game_admin.c!\n");
@@ -104,12 +112,16 @@ int main(int argc, char* argv[]) {
         }
 
         if (msg.type == REGISTER_CYCLE){
-            printf("test_cycle\n");
+            //printf("test_cycle\n");
             if (nCycle < 2){
                 arena.cycle[nCycle].pos = generate_pos(nCycle);
-
+                if (nCycle == 0)
+                    arena.cycle[nCycle].dir = EAST;
+                else
+                    arena.cycle[nCycle].dir = WEST;
                 reply.cycleId = nCycle;
                 reply.type = INIT;
+                cycle_pt[nCycle] = fromWhom;
                 if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
                     exit(0);
@@ -123,10 +135,11 @@ int main(int argc, char* argv[]) {
                     exit(0);
                 }
             }
+            continue;
         }
 
         if (msg.type == REGISTER_TIMER){
-            printf("test_timer\n");
+            //printf("test_timer\n");
             if (timer_flag){
                 reply.type = FAIL;
                 if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
@@ -143,12 +156,13 @@ int main(int argc, char* argv[]) {
                     exit(0);
                 }
             }
+            continue;
         }
 
 
         if (msg.type == REGISTER_COURIER){
-            printf("test_courier\n");
-            if (courier_flag){
+            //printf("test_courier\n");
+            if (courier2_flag){
                 reply.type = FAIL;
                 if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
@@ -156,7 +170,7 @@ int main(int argc, char* argv[]) {
                 }
             }
             else{
-                courier_flag = 1;
+                courier2_flag = 1;
                 courier_pt[2] = fromWhom;
                 reply.type = INIT;
                 if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
@@ -164,13 +178,19 @@ int main(int argc, char* argv[]) {
                     exit(0);
                 }
             }
+            continue;
         }
 
 
         if (msg.type == REGISTER_HUMAN){
-            printf("test_human\n");
+            //printf("test_human\n");
             if (nCycle < 2){
                 arena.cycle[nCycle].pos = generate_pos(nCycle);
+                if (nCycle == 0)
+                    arena.cycle[nCycle].dir = EAST;
+                else
+                    arena.cycle[nCycle].dir = WEST;
+                cycle_pt[nCycle] = fromWhom;
                 reply.humanId = nCycle;
                 reply.type = INIT;
                 if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
@@ -186,11 +206,12 @@ int main(int argc, char* argv[]) {
                     exit(0);
                 }
             }
+            continue;
         }
 
 
         if (msg.type == CYCLE_READY){
-            printf("test_cycle_ready\n");
+            //printf("test_cycle_ready\n");
             cycle_pt[msg.cycleId] = fromWhom;
             cycle_ready[msg.cycleId] = 1;
 
@@ -208,23 +229,18 @@ int main(int argc, char* argv[]) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
                     exit(0);
                 }
+                cycle_ready[0] = cycle_ready[1] = 0;
+                start_flag = 1;
             }
             //else, let the cycle wait
-        }
-
-
-        if (msg.type == TIMER_READY){
-            printf("test_timer_ready\n");
-            timer_ready = 1;
-            move_ready = 1;
-            timer_pt = fromWhom;
+            continue;
         }
 
 
         if (msg.type == COURIER_READY){
-            printf("test_courier_ready\n");
+            //printf("test_courier_ready\n");
             courier_pt[2] = fromWhom;
-
+            /*
             if (fifo_size > 0){
                 reply.type = DISPLAY_ARENA;
                 reply.arena = fifo[fi];
@@ -237,13 +253,14 @@ int main(int argc, char* argv[]) {
                     exit(0);
                 }
             }
-            else
-                courier2_ready = 1;
+            else*/
+            courier2_ready = 1;
+            continue;
         }
 
 
         if (msg.type == HUMAN_READY){
-            printf("test_human_ready\n");
+            //printf("test_human_ready\n");
             courier_pt[msg.humanId] = fromWhom;
             cycle_ready[msg.humanId] = 1;
 
@@ -256,149 +273,152 @@ int main(int argc, char* argv[]) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
                     exit(0);
                 }
-
                 if (Reply(cycle_pt[1], &reply, sizeof(reply)) == -1) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
                     exit(0);
                 }
+                cycle_ready[0] = cycle_ready[1] = 0;
+                start_flag = 1;
             }
             //else, let the human wait
+            continue;
         }
 
 
         if (msg.type == OKAY){
             courier_pt[2] = fromWhom;
-
-            if (fifo_size > 0){
-                reply.type = DISPLAY_ARENA;
-                reply.arena = fifo[fi];
-                fi = (fi + 1) % 20;
-                fifo_size--;
-
-                courier2_ready = 0;
-                if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message!\n");
-                    exit(0);
-                }
-            }
-            else
-                courier2_ready = 1;
+            courier2_ready = 1;
+            continue;
         }
 
         // cycle move
-        if (msg.type == MOVE || move_flag){
-            if (msg.type == MOVE && timer_ready){
-
-                //这里要记录cycle的pt, 等计时完后用来update
-                timer_ready = 0;
-                move_ready = 0;
-                reply.type = SLEEP;
-                cycle_pt[msg.cycleId] = fromWhom;
-
-                fifo_msg[(fi_msg + fifo_msg_size) % 20] = msg;
-                fifo_msg_size++;
-
-                if (msg.boost == YES)
-                    reply.interval = 10000;
-                else if (msg.boost == NO)
-                    reply.interval = 50000;
-
-                if (Reply(timer_pt, &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message in game_admin.c!\n");
-                    exit(0);
-                }
-                move_flag = 1;
-            }
-            if (move_ready){
-                if (fifo_msg_size > 0){
-                    msg_temp = fifo_msg[fi_msg];
-                    fi_msg = (fi_msg + 1) % 20;
-                    fifo_msg_size--;
-                }
-
-                move(msg_temp.cycleId, msg_temp.dir);
-                move_flag = 0;
-                
-                reply.type = UPDATE;
-                reply.arena = arena;
-                // 这个fromwhom要改成记录在buffer里面的cycle的pt
-                if (Reply(cycle_pt[msg.cycleId], &reply, sizeof(reply)) == -1) {
-                        fprintf(stderr, "Cannot reply message in game_admin.c!\n");
-                        exit(0);
-                    }
-
-                fifo[(fi + fifo_size) % 20] = arena;
-                fifo_size++;
-            }
+        if (msg.type == MOVE){
+            fifo_move[(fi_move + fifo_move_size) % 20].msg = msg;
+            fifo_move[(fi_move + fifo_move_size) % 20].fromWhom = fromWhom;
+            fifo_move[(fi_move + fifo_move_size) % 20].id = msg.cycleId;
+            fifo_move[(fi_move + fifo_move_size) % 20].human_flag = 0;
+            fifo_move_size++;
+            cycle_pt[msg.cycleId] = fromWhom;
+            cycle_ready[msg.cycleId] = 1;
+            /*
+            if (msg.boost == YES)
+                reply.interval = 10000;
+            else if (msg.boost == NO)
+                reply.interval = 50000;
+            
+            if (Reply(timer_pt, &reply, sizeof(reply)) == -1) {
+                fprintf(stderr, "Cannot reply message in game_admin.c!\n");
+                exit(0);
+            }*/
+            continue;
         }
 
 
         // human move
         if (msg.type == HUMAN_MOVE){
-            courier_pt[msg.humanId] = fromWhom;
-            move(msg.humanId, msg.dir);
+            fifo_move[(fi_move + fifo_move_size) % 20].msg = msg;
+            fifo_move[(fi_move + fifo_move_size) % 20].fromWhom = fromWhom;
+            fifo_move[(fi_move + fifo_move_size) % 20].id = msg.humanId;
+            fifo_move[(fi_move + fifo_move_size) % 20].human_flag = 1;
+            fifo_move_size++;
+            cycle_pt[msg.humanId] = fromWhom;
+            cycle_ready[msg.humanId] = 1;
+            continue;
+        }
 
-            reply.type = UPDATE;
-            reply.humanId = msg.humanId;
-            if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
+
+        if (msg.type == TIMER_READY && start_flag){
+            timer_pt = fromWhom;
+            timer_ready = 1;
+            while (fifo_move_size > 0){
+                // fix human player may move toward itself bug
+                move(fifo_move[fi_move].id, fifo_move[fi_move].msg.dir);
+
+                if (check_end()){
+                    end_flag = 1;
+                    break;
+                }
+
+                if (fifo_move[fi_move].human_flag){
+                    // human move
+                    reply.type = UPDATE;
+                    reply.humanId = fifo_move[fi_move].id;
+                }
+                else{
+                    // cycle move
+                    reply.type = UPDATE;
+                    reply.arena = arena;
+                }
+                
+                cycle_ready[fifo_move[fi_move].id] = 0;
+                if (Reply(fifo_move[fi_move].fromWhom, &reply, sizeof(reply)) == -1) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
                     exit(0);
                 }
-
-            fifo[(fi + fifo_size) % 20] = arena;
-            fifo_size++;
-        }
-
-
-        // check end
-        if (check_end() || end_flag){
-            if (cycle_ready[0] && cycle_ready[1] && timer_ready && courier2_ready){
-
-                end_flag = 0;
-                reply.type = END;
-
-                if (Reply(cycle_pt[0], &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message!\n");
-                    exit(0);
-                }
-
-                if (Reply(cycle_pt[1], &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message!\n");
-                    exit(0);
-                }
-
-                if (Reply(timer_pt, &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message!\n");
-                    exit(0);
-                }
-
-                if (Reply(courier_pt[0], &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message!\n");
-                    exit(0);
-                }
-
-                if (Reply(courier_pt[1], &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message!\n");
-                    exit(0);
-                }
-
-                reply.arena = msg.arena;
-                reply.cycleId = get_winner();
-                if (Reply(courier_pt[2], &reply, sizeof(reply)) == -1) {
-                    fprintf(stderr, "Cannot reply message!\n");
-                    exit(0);
-                }
-                break;
+                fi_move = (fi_move + 1) % 20;
+                fifo_move_size--;
             }
-            
-            else{
-                end_flag = 1;
+
+            //courier2_ready = 0;
+            reply.type = DISPLAY_ARENA;
+            reply.arena = arena;
+            courier2_ready = 0;
+            if (Reply(courier_pt[2], &reply, sizeof(reply)) == -1) {
+                fprintf(stderr, "Cannot reply message!\n");
+                exit(0);
+            }
+
+            if (end_flag)   break;
+
+            reply.type = SLEEP;
+            reply.interval = 50000;
+            timer_ready = 0;
+            if (Reply(timer_pt, &reply, sizeof(reply)) == -1) {
+                fprintf(stderr, "Cannot reply message!\n");
+                exit(0);
             }
         }
-
-        //sleep(1);
+    }
+    
+    while (!(cycle_ready[0] && cycle_ready[1] && timer_ready && courier2_ready)){
+        if (Receive(&fromWhom, &msg, sizeof(msg)) == -1) {
+            fprintf(stderr, "Cannot receive message in game_admin.c!\n");
+            exit(0);
+        }
+        if (msg.type == MOVE)
+            cycle_ready[msg.cycleId] = 1;
+        else if (msg.type == HUMAN_MOVE)
+            cycle_ready[msg.humanId] = 1;
+        else if (msg.type == TIMER_READY)
+            timer_ready = 1;
+        else if (msg.type == OKAY)
+            courier2_ready = 1;
     }
 
+    reply.type = END;
+
+    if (Reply(cycle_pt[0], &reply, sizeof(reply)) == -1) {
+        fprintf(stderr, "Cannot reply message!\n");
+        exit(0);
+    }
+    if (Reply(cycle_pt[1], &reply, sizeof(reply)) == -1) {
+        fprintf(stderr, "Cannot reply message!\n");
+        exit(0);
+    }
+    if (Reply(timer_pt, &reply, sizeof(reply)) == -1) {
+        fprintf(stderr, "Cannot reply message!\n");
+        exit(0);
+    }
+
+    reply.arena = msg.arena;
+    reply.cycleId = get_winner();
+    if (Reply(courier_pt[2], &reply, sizeof(reply)) == -1) {
+        fprintf(stderr, "Cannot reply message!\n");
+        exit(0);
+    }
+
+    fprintf(stderr, "end!\n");
+    sleep(1);
     if (name_detach() == -1) {
         fprintf(stderr, "Cannot detach name!\n");
         exit(0);

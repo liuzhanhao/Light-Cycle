@@ -8,3 +8,4 @@ killall timer
 killall courier
 killall painter
 killall keyboard
+killall cycle
