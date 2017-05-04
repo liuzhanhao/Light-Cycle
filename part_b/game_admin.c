@@ -11,9 +11,10 @@ char *timer_pt = NULL;
 char *cycle_pt[2] = {NULL, NULL};
 char *courier_pt[3] = {NULL, NULL, NULL};
 ARENA arena;
-MESSAGE msg, reply;
+MESSAGE msg, reply, msg_temp;
+MESSAGE fifo_msg[20];
 ARENA fifo[20];
-int fifo_size = 0, fi = 0;
+int fifo_size = 0, fi = 0, fifo_msg_size = 0, fi_msg = 0;
 int nCycle = 0, timer_flag = 0, courier_flag = 0;
 int cycle_ready[2] = {0, 0}, timer_ready = 0, courier2_ready = 0;
 
@@ -292,6 +293,11 @@ int main(int argc, char* argv[]) {
                 timer_ready = 0;
                 move_ready = 0;
                 reply.type = SLEEP;
+                cycle_pt[msg.cycleId] = fromWhom;
+
+                fifo_msg[(fi_msg + fifo_msg_size) % 20] = msg;
+                fifo_msg_size++;
+
                 if (msg.boost == YES)
                     reply.interval = 10000;
                 else if (msg.boost == NO)
@@ -304,15 +310,19 @@ int main(int argc, char* argv[]) {
                 move_flag = 1;
             }
             if (move_ready){
-                move(msg.cycleId, msg.dir);
-                move_flag = 0;
-                cycle_pt[msg.cycleId] = fromWhom;
+                if (fifo_msg_size > 0){
+                    msg_temp = fifo_msg[fi_msg];
+                    fi_msg = (fi_msg + 1) % 20;
+                    fifo_msg_size--;
+                }
 
-                // 改， 不是马上update的，而是timer ready时update
+                move(msg_temp.cycleId, msg_temp.dir);
+                move_flag = 0;
+                
                 reply.type = UPDATE;
                 reply.arena = arena;
                 // 这个fromwhom要改成记录在buffer里面的cycle的pt
-                if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
+                if (Reply(cycle_pt[msg.cycleId], &reply, sizeof(reply)) == -1) {
                         fprintf(stderr, "Cannot reply message in game_admin.c!\n");
                         exit(0);
                     }
