@@ -216,7 +216,7 @@ int main(int argc, char* argv[]) {
                 // 1 for check one human player's keys, arrows
                 //check_contain_move_key(1, humanId, msg.key, dir, boost);
                 fifo[(fi + fifo_size) % 20].dir = dir;
-                fifo[(fi + fifo_size) % 20].id = humanId;
+                fifo[(fi + fifo_size) % 20].id = 0;
                 fifo[(fi + fifo_size) % 20].boost = boost;
                 fifo_size++;
                 // human[1]
@@ -247,7 +247,7 @@ int main(int argc, char* argv[]) {
                 // 1 for check one human player's keys, arrows
                 //check_contain_move_key(1, humanId, msg.key, dir, boost);
                 fifo[(fi + fifo_size) % 20].dir = dir;
-                fifo[(fi + fifo_size) % 20].id = humanId;
+                fifo[(fi + fifo_size) % 20].id = 1;
                 fifo[(fi + fifo_size) % 20].boost = boost;
                 fifo_size++;
             }
