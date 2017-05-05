@@ -29,12 +29,16 @@ int cycle_ready[2] = {0, 0}, timer_ready = 0, courier2_ready = 0;
 
 COORDINATE generate_pos(int nCycle){
     COORDINATE pos;
+    int maxy, maxx;
+    initscr();
+    getmaxyx(stdscr, maxy, maxx);
+
     if (nCycle == 0){
-        pos.x = MAX_WIDTH * 0.30f; 
+        pos.x = MAX_WIDTH * 0.50f - maxx / 2 + 3; 
         pos.y = MAX_HEIGHT / 2;
     }
     else if (nCycle == 1){
-        pos.x = MAX_WIDTH * 0.70f; 
+        pos.x = MAX_WIDTH * 0.50f + maxx / 2 - 3; 
         pos.y = MAX_HEIGHT / 2;
     }
     else
