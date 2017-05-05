@@ -28,8 +28,8 @@ int keyboard_ready = 0, nCourier = 0, humanId = 0, new_dir = 0;
 
 
 int main(int argc, char* argv[]) {
-    FILE *f = fopen("file.txt", "w");
-    setlinebuf(f);
+    //FILE *f = fopen("file.txt", "w");
+    //setlinebuf(f);
 
     if (name_attach("Input_Admin", NULL) == -1) {
         fprintf(stderr, "Cannot attach name in input_admin.c!\n");
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
                     exit(0);
                 }
             }
-            fprintf(f, "REGISTER_COURIER\n");
+            //fprintf(f, "REGISTER_COURIER\n");
         }
 
 
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
             if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
                 fprintf(stderr, "Cannot reply message in input_admin.c!\n");
             }
-            fprintf(f, "COURIER_READY\n");
+            //fprintf(f, "COURIER_READY\n");
         }
 
 
@@ -90,30 +90,30 @@ int main(int argc, char* argv[]) {
             if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
                 fprintf(stderr, "Cannot reply message in input_admin.c!\n");
             }
-            fprintf(f, "INIT\n");
+            //fprintf(f, "INIT\n");
         }
 
         if (msg.type == FAIL){
-            fprintf(f, "FAIL\n");
+            //fprintf(f, "FAIL\n");
         }
 
 
         if (msg.type == START){
-            fprintf(f, "START\n");
+            //fprintf(f, "START\n");
             if (nHuman == 1){
                 human_start[0] = 1;
                 human_ready[0] = 1;
                 human_pt[0] = fromWhom;
                 humanId = msg.humanId; // only record humanId when nHuman = 1
                 human_dir[0] = (humanId == 0) ? EAST : WEST;
-                fprintf(f, "START1\n");
+                //fprintf(f, "START1\n");
             }
             else if (nHuman == 2){
                 human_start[msg.humanId] = 1;
                 human_ready[msg.humanId] = 1;
                 human_pt[msg.humanId] = fromWhom;
                 human_dir[msg.humanId] = (msg.humanId == 0) ? EAST : WEST;
-                fprintf(f, "START2\n");
+                //fprintf(f, "START2\n");
             }
             // reply after human move
         }
@@ -126,7 +126,7 @@ int main(int argc, char* argv[]) {
                 fprintf(stderr, "Cannot reply message in input_admin.c!\n");
                 exit(0);
             }
-            fprintf(f, "REGISTER_KEYBOARD\n");
+            //fprintf(f, "REGISTER_KEYBOARD\n");
         }
 
 
@@ -134,8 +134,7 @@ int main(int argc, char* argv[]) {
             if (msg.type == KEYBOARD_READY){
                 keyboard_pt = fromWhom;
                 keyboard_ready = 1;
-                //fprintf(stderr, "KEYBOARD_READY\n");
-                fprintf(f, "KEYBOARD_READY\n");
+                //fprintf(f, "KEYBOARD_READY\n");
                 start_flag = 1;
             }
 
@@ -144,7 +143,7 @@ int main(int argc, char* argv[]) {
                 if (Reply(keyboard_pt, &reply, sizeof(reply)) == -1) {
                     fprintf(stderr, "Cannot reply message in input_admin.c!\n");
                 }
-                fprintf(f, "start keyboard!\n");
+                //fprintf(f, "start keyboard!\n");
                 start_flag = 0;
                 keyboard_ready = 0;
             }
@@ -254,7 +253,7 @@ int main(int argc, char* argv[]) {
 
             keyboard_ready = 1;
             // reply after human move
-            fprintf(f, "KEYBOARD_INPUT %d\n", new_dir);
+            //fprintf(f, "KEYBOARD_INPUT %d\n", new_dir);
         }
 
 
@@ -267,13 +266,13 @@ int main(int argc, char* argv[]) {
                 human_ready[msg.humanId] = 1;
                 human_pt[msg.humanId] = fromWhom;
             }
-            fprintf(f, "UPDATE\n");
+            //fprintf(f, "UPDATE\n");
         }
 
 
         if (msg.type == END){
             end_pt = fromWhom;
-            fprintf(f, "END\n");
+            //fprintf(f, "END\n");
             break;
         }
 
@@ -292,7 +291,7 @@ int main(int argc, char* argv[]) {
                         fprintf(stderr, "Cannot reply message in input_admin.c!\n");
                         exit(0);
                     }
-                    fprintf(f, "HUMAN_MOVE\n");
+                    //fprintf(f, "HUMAN_MOVE\n");
                 }
                 else if (nHuman == 2 && human_ready[fifo[fi].id]) {
                     human_ready[fifo[fi].id] = 0;
@@ -300,7 +299,7 @@ int main(int argc, char* argv[]) {
                         fprintf(stderr, "Cannot reply message in input_admin.c!\n");
                         exit(0);
                     }
-                    fprintf(f, "HUMAN_MOVE %d\n", fifo[fi].id);
+                    //fprintf(f, "HUMAN_MOVE %d\n", fifo[fi].id);
                 }
                 //maybe need to move into the above if {}
                 fi = (fi + 1) % 20;
@@ -366,12 +365,12 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "Cannot reply message in input_admin.c!\n");
     }
 
-    fprintf(f, "END2!\n");
+    //fprintf(f, "END2!\n");
     if (name_detach() == -1) {
         fprintf(stderr, "Cannot detach name in input_admin.c!\n");
         exit(0);
     }
 
-    fclose(f);
+    //fclose(f);
     return 0;
 }
