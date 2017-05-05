@@ -65,6 +65,8 @@ sleep 1     #take some time for display admin to start
 if [ $man -gt 0 ]
 then
   ./input_admin &
+  sleep 1
+  ./keyboard &
   sleep 1     #take some time for input admin to start
 #
   for ((  i = 0 ;  i < $man;  i++  ))
@@ -80,9 +82,4 @@ done
 
 ./painter &
 sleep 1
-./timer &
-
-if [ $man -gt 0 ]
-then
-  ./keyboard
-fi
+./timer
