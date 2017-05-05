@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ncurses.h>
 #include "simpl.h"
 #include "message.h"
 
@@ -60,7 +61,7 @@ int check_end(){
 }
 
 
-void move(int cycleId, DIRECTION dir){
+void move_cycle(int cycleId, DIRECTION dir){
 
     COORDINATE pos;
     pos.x = arena.cycle[cycleId].pos.x;
@@ -87,11 +88,31 @@ void move(int cycleId, DIRECTION dir){
 int get_winner(){
     // to improve
     if (arena.cycle[0].pos.x == arena.cycle[1].pos.x && arena.cycle[0].pos.y == arena.cycle[1].pos.y)
-        return -1;
+            return -1;
     else if (arena.wall[arena.cycle[0].pos.x][arena.cycle[0].pos.y] != NONE)
         return 1;
     else
         return 0;
+}
+
+
+int check_out_of_maxxy(int cycleId, DIRECTION dir){
+    // check if the distance is too large
+
+    int newx = newx = arena.cycle[cycleId].pos.x, newy = newx = arena.cycle[cycleId].pos.y, maxx, maxy;
+    initscr();
+    getmaxyx(stdscr, maxy, maxx);
+
+    if (dir == EAST)
+        newx = arena.cycle[cycleId].pos.x + 1;
+    else if (dir == SOUTH)
+        newy = arena.cycle[cycleId].pos.y + 1;
+    else if (dir == WEST)
+        newx = arena.cycle[cycleId].pos.x - 1;
+    else if (dir == NORTH)
+        newy = arena.cycle[cycleId].pos.y - 1;
+    
+    return abs(newy - arena.cycle[1-cycleId].pos.y) > maxy - 6 || abs(newx - arena.cycle[1-cycleId].pos.x) > maxx - 6;
 }
 
 
@@ -241,14 +262,13 @@ int main(int argc, char* argv[]) {
 
 
         if (msg.type == HUMAN_READY){
-            courier_pt[msg.humanId] = fromWhom;
+            cycle_pt[msg.humanId] = fromWhom;
             cycle_ready[msg.humanId] = 1;
 
             if (cycle_ready[0] && cycle_ready[1])
             {
                 generate_wall();
                 reply.type = START;
-                fprintf(stderr, "start\n");
                 reply.humanId = 0;
                 if (Reply(cycle_pt[0], &reply, sizeof(reply)) == -1) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
@@ -275,6 +295,7 @@ int main(int argc, char* argv[]) {
 
         // cycle move
         if (msg.type == MOVE){
+
             fifo_move[(fi_move + fifo_move_size) % 20].msg = msg;
             fifo_move[(fi_move + fifo_move_size) % 20].fromWhom = fromWhom;
             fifo_move[(fi_move + fifo_move_size) % 20].id = msg.cycleId;
@@ -292,13 +313,24 @@ int main(int argc, char* argv[]) {
             if (arena.cycle[msg.humanId].dir == (msg.dir + 2) % 4)
                 msg.dir = arena.cycle[msg.humanId].dir;
 
-            fifo_move[(fi_move + fifo_move_size) % 20].msg = msg;
-            fifo_move[(fi_move + fifo_move_size) % 20].fromWhom = fromWhom;
-            fifo_move[(fi_move + fifo_move_size) % 20].id = msg.humanId;
-            fifo_move[(fi_move + fifo_move_size) % 20].human_flag = 1;
-            fifo_move_size++;
-            cycle_pt[msg.humanId] = fromWhom;
-            cycle_ready[msg.humanId] = 1;
+            if (check_out_of_maxxy(msg.humanId, msg.dir)){
+                // if distance > max_width - 6, no move
+                reply.type = UPDATE;
+                reply.humanId = msg.humanId;
+                if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
+                    fprintf(stderr, "Cannot reply message in game_admin.c!\n");
+                    exit(0);
+                }
+            }
+            else{
+                fifo_move[(fi_move + fifo_move_size) % 20].msg = msg;
+                fifo_move[(fi_move + fifo_move_size) % 20].fromWhom = fromWhom;
+                fifo_move[(fi_move + fifo_move_size) % 20].id = msg.humanId;
+                fifo_move[(fi_move + fifo_move_size) % 20].human_flag = 1;
+                fifo_move_size++;
+                cycle_pt[msg.humanId] = fromWhom;
+                cycle_ready[msg.humanId] = 1;
+            }
             continue;
         }
 
@@ -308,7 +340,7 @@ int main(int argc, char* argv[]) {
             timer_ready = 1;
             int boost_flag = 0;
             while (fifo_move_size > 0){
-                move(fifo_move[fi_move].id, fifo_move[fi_move].msg.dir);
+                move_cycle(fifo_move[fi_move].id, fifo_move[fi_move].msg.dir);
 
                 if (check_end()){
                     end_flag = 1;
@@ -329,7 +361,7 @@ int main(int argc, char* argv[]) {
                     boost_flag = 1;
 
                 cycle_ready[fifo_move[fi_move].id] = 0;
-                if (Reply(fifo_move[fi_move].fromWhom, &reply, sizeof(reply)) == -1) {
+                if (Reply(cycle_pt[fifo_move[fi_move].id], &reply, sizeof(reply)) == -1) {
                     fprintf(stderr, "Cannot reply message in game_admin.c!\n");
                     exit(0);
                 }
@@ -353,7 +385,7 @@ int main(int argc, char* argv[]) {
             if (Reply(timer_pt, &reply, sizeof(reply)) == -1) {
                 fprintf(stderr, "Cannot reply message!\n");
                 exit(0);
-            }
+            }   
         }
     }
     

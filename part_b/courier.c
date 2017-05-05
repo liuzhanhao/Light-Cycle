@@ -113,8 +113,15 @@ int main(int argc, char* argv[]) {
 
         msg.type = REGISTER_COURIER;
 
-        if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
-            fprintf(stderr, "Cannot send message to Input_Admin in courier 0 or 1!\n");
+        if (courierId == 0){
+            if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
+                fprintf(stderr, "Cannot send message to Input_Admin in courier 0!\n");
+            }
+        }
+        else if (courierId == 1){
+            if (Send(fd_input, &msg, &reply_input, sizeof(msg), sizeof(reply_input)) == -1) {
+                fprintf(stderr, "Cannot send message to Input_Admin in courier 1!\n");
+            }
         }
 
 
@@ -172,15 +179,25 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        while (reply_game.type != END) {
+        while (1) {
             if (reply_input.type == HUMAN_MOVE) {
                 msg.type = HUMAN_MOVE;
                 msg.humanId = reply_input.humanId;
                 msg.dir = reply_input.dir;
                 msg.boost = reply_input.boost;
-                if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
-                    fprintf(stderr, "Cannot send HUMAN_MOVE message in courier.c!\n");
+                if (courierId == 0){
+                    if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
+                        fprintf(stderr, "Cannot send HUMAN_MOVE message in courier 0!\n");
+                    }
                 }
+                else if (courierId == 1){
+                    if (Send(fd_game, &msg, &reply_game, sizeof(msg), sizeof(reply_game)) == -1) {
+                        fprintf(stderr, "Cannot send HUMAN_MOVE message in courier 1!\n");
+                    }
+                }
+                
+                if (reply_game.type == END)
+                    break;
             }
 
             if (reply_game.type == UPDATE){

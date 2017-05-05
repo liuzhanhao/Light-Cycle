@@ -145,10 +145,9 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "*        RED wins the game!        *\n");
     else if (reply.cycleId == 1)
         fprintf(stderr, "*        GREEN wins the game!        *\n");
-    else if (reply.cycleId == 0)
+    else if (reply.cycleId == -1)
         fprintf(stderr, "*        It's a draw!        *\n");
     
-
     if (name_detach() == -1) {
         fprintf(stderr, "Cannot detach PAINTER name!\n");
         exit(0);
