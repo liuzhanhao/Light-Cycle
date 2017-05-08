@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <string.h>
-//#include <time.h>
+#include <time.h>
 #include <unistd.h>
 #include "simpl.h"
 #include <stdbool.h>
 #include "message.h"
+#include <ncurses.h>
+#include <math.h>
 
 int cycleId;
 ARENA arena;
@@ -15,6 +16,8 @@ DIRECTION dir;
 // check if dir is reachable for mycycle
 bool check(DIRECTION dir)
 {
+    //if (check_out_of_maxxy(dir)) return false;
+
     if (dir == EAST)
         return arena.wall[mycycle.pos.x+1][mycycle.pos.y] == NONE && !((mycycle.pos.x+1 == oppocycle.pos.x) && (mycycle.pos.y == oppocycle.pos.y));
     else if (dir == SOUTH)
@@ -26,10 +29,72 @@ bool check(DIRECTION dir)
     return false;
 }
 
+double min(double a, double b, double c){
+    if (a <= b && a <= c)   return a;
+    else if (b <= a && b <= c) return b;
+    return c;
+}
+
+double max(double a, double b, double c){
+    if (a >= b && a >= c)   return a;
+    else if (b >= a && b >= c) return b;
+    return c;
+}
+
+double mid(double a, double b, double c){
+    return a + b + c - max(a,b,c) - min(a,b,c);
+}
+
+double getDis(int x1, int y1, int x2, int y2){
+    return sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+}
+
+DIRECTION getDir(){
+    int x1 = mycycle.pos.x, x2 = oppocycle.pos.x, y1 = mycycle.pos.y, y2 = oppocycle.pos.y;
+    if (check(EAST) && getDis(x1+1,y1,x2,y2) < min(getDis(x1-1,y1,x2,y2), getDis(x1,y1+1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return EAST;
+    if (check(SOUTH) && getDis(x1,y1+1,x2,y2) < min(getDis(x1+1,y1,x2,y2), getDis(x1-1,y1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return SOUTH;
+    if (check(WEST) && getDis(x1-1,y1,x2,y2) < min(getDis(x1+1,y1,x2,y2), getDis(x1,y1+1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return WEST;
+    if (check(NORTH) && getDis(x1,y1-1,x2,y2) < min(getDis(x1+1,y1,x2,y2), getDis(x1-1,y1,x2,y2), getDis(x1,y1+1,x2,y2)))
+        return NORTH;
+
+
+    if (check(EAST) && getDis(x1+1,y1,x2,y2) < mid(getDis(x1-1,y1,x2,y2), getDis(x1,y1+1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return EAST;
+    if (check(SOUTH) && getDis(x1,y1+1,x2,y2) < mid(getDis(x1+1,y1,x2,y2), getDis(x1-1,y1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return SOUTH;
+    if (check(WEST) && getDis(x1-1,y1,x2,y2) < mid(getDis(x1+1,y1,x2,y2), getDis(x1,y1+1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return WEST;
+    if (check(NORTH) && getDis(x1,y1-1,x2,y2) < mid(getDis(x1+1,y1,x2,y2), getDis(x1-1,y1,x2,y2), getDis(x1,y1+1,x2,y2)))
+        return NORTH;
+    
+    if (check(EAST) && getDis(x1+1,y1,x2,y2) < max(getDis(x1-1,y1,x2,y2), getDis(x1,y1+1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return EAST;
+    if (check(SOUTH) && getDis(x1,y1+1,x2,y2) < max(getDis(x1+1,y1,x2,y2), getDis(x1-1,y1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return SOUTH;
+    if (check(WEST) && getDis(x1-1,y1,x2,y2) < max(getDis(x1+1,y1,x2,y2), getDis(x1,y1+1,x2,y2), getDis(x1,y1-1,x2,y2)))
+        return WEST;
+    if (check(NORTH) && getDis(x1,y1-1,x2,y2) < max(getDis(x1+1,y1,x2,y2), getDis(x1-1,y1,x2,y2), getDis(x1,y1+1,x2,y2)))
+        return NORTH;
+
+    int i;
+    for (i = 0; i < 4; i++)
+        if (check(i))
+            break;
+        
+    if (i < 4)
+        return i;
+    else
+        return mycycle.dir;
+}
+
 
 int main(int argc, char* argv[]) {
     int fd;
     MESSAGE msg, reply;
+    srand(time(NULL));
 
     char name[] = "Cycle ?";
 
@@ -90,22 +155,8 @@ int main(int argc, char* argv[]) {
         }
 
         // MOVE
-        if (check(mycycle.dir))
-            dir = mycycle.dir;
-        else
-        {
-            int i;
-            for (i = 0; i < 4; i++)
-                if (mycycle.dir != i && check(i))
-                    break;
-
-            if (i < 4)
-                dir = i;
-            else    
-                dir = mycycle.dir;
-        }
         msg.type = MOVE;
-        msg.dir = dir;
+        msg.dir = getDir();
         msg.cycleId = cycleId;
         msg.boost = NO;
 
