@@ -2,22 +2,6 @@
 #
 # help_run() To print help
 #
-
-intexit() {
-    # Kill all subprocesses (all processes in the current process group)
-    kill -HUP -$$
-}
-
-hupexit() {
-    # HUP'd (probably by intexit)
-    echo
-    echo "Interrupted"
-    exit
-}
-
-trap hupexit HUP
-trap intexit INT
-
 help_run()
 {
   echo "Usage: $0 -m -d"
@@ -65,8 +49,6 @@ sleep 1     #take some time for display admin to start
 if [ $man -gt 0 ]
 then
   ./input_admin &
-  sleep 1
-  ./keyboard &
   sleep 1     #take some time for input admin to start
 #
   for ((  i = 0 ;  i < $man;  i++  ))
@@ -82,4 +64,9 @@ done
 
 ./painter &
 sleep 1
-./timer
+./timer &
+
+if [ $man -gt 0 ]
+then
+  ./keyboard
+fi
