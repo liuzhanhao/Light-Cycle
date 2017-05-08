@@ -1,3 +1,21 @@
+/*
+* CSCI3180 Principles of Programming Languages
+*
+* --- Declaration ---
+*
+* I declare that the assignment here submitted is original except for source
+* material explicitly acknowledged. I also acknowledge that I am aware of
+* University policy and regulations on honesty in academic work, and of the
+* disciplinary guidelines and procedures applicable to breaches of such policy
+* and regulations, as contained in the website
+* http://www.cuhk.edu.hk/policy/academichonesty/
+*
+* Assignment 5A
+* Name : Liu Zhan Hao
+* Student ID : 1155092201
+* Email Addr : zhliu6@cse.cuhk.edu.hk
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -22,7 +40,7 @@ char *courier_pt[3] = {NULL, NULL, NULL};
 ARENA arena;
 MESSAGE msg, reply, msg_temp;
 MOVE_MSG fifo_move[20];
-int fifo_move_size = 0, fi_move = 0;
+int fifo_move_size = 0, fi_move = 0, winner = 0;
 int nCycle = 0, timer_flag = 0, courier2_flag = 0;
 int cycle_ready[2] = {0, 0}, timer_ready = 0, courier2_ready = 0;
 
@@ -61,7 +79,14 @@ void generate_wall(){
 
 
 int check_end(){
-    return arena.wall[arena.cycle[0].pos.x][arena.cycle[0].pos.y] != NONE || arena.wall[arena.cycle[1].pos.x][arena.cycle[1].pos.y] != NONE || (arena.cycle[0].pos.x == arena.cycle[1].pos.x && arena.cycle[0].pos.y == arena.cycle[1].pos.y);
+    if (arena.wall[arena.cycle[0].pos.x][arena.cycle[0].pos.y] != NONE)
+        return 1;
+    if (arena.wall[arena.cycle[1].pos.x][arena.cycle[1].pos.y] != NONE)
+        return 0;
+    if (arena.cycle[0].pos.x == arena.cycle[1].pos.x && arena.cycle[0].pos.y == arena.cycle[1].pos.y)
+        return -1;
+    
+    return -2;
 }
 
 
@@ -103,7 +128,7 @@ int get_winner(){
 int check_out_of_maxxy(int cycleId, DIRECTION dir){
     // check if the distance is too large
 
-    int newx = newx = arena.cycle[cycleId].pos.x, newy = newx = arena.cycle[cycleId].pos.y, maxx, maxy;
+    int newx = arena.cycle[cycleId].pos.x, newy = arena.cycle[cycleId].pos.y, maxx, maxy;
     initscr();
     getmaxyx(stdscr, maxy, maxx);
 
@@ -307,6 +332,7 @@ int main(int argc, char* argv[]) {
             fifo_move_size++;
             cycle_pt[msg.cycleId] = fromWhom;
             cycle_ready[msg.cycleId] = 1;
+
             continue;
         }
 
@@ -316,6 +342,8 @@ int main(int argc, char* argv[]) {
             //prevent the human player to move the cycle towards itself
             if (arena.cycle[msg.humanId].dir == (msg.dir + 2) % 4)
                 msg.dir = arena.cycle[msg.humanId].dir;
+
+            arena.cycle[msg.humanId].dir = msg.dir;
 
             if (check_out_of_maxxy(msg.humanId, msg.dir)){
                 // if distance > max_width - 6, no move
@@ -346,7 +374,8 @@ int main(int argc, char* argv[]) {
             while (fifo_move_size > 0){
                 move_cycle(fifo_move[fi_move].id, fifo_move[fi_move].msg.dir);
 
-                if (check_end()){
+                winner = check_end();
+                if (winner != -2){
                     end_flag = 1;
                     break;
                 }
@@ -423,7 +452,7 @@ int main(int argc, char* argv[]) {
     }
 
     reply.arena = msg.arena;
-    reply.cycleId = get_winner();
+    reply.cycleId = winner;
     if (Reply(courier_pt[2], &reply, sizeof(reply)) == -1) {
         fprintf(stderr, "Cannot reply message!\n");
         exit(0);
