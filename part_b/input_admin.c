@@ -322,6 +322,12 @@ int main(int argc, char* argv[]) {
                 fprintf(stderr, "Cannot receive message in input_admin.c!\n");
                 exit(0);
             }
+            keyboard_pt = fromWhom;
+        }
+
+        reply.type = END;
+        if (Reply(keyboard_pt, &reply, sizeof(reply)) == -1) {
+            fprintf(stderr, "Cannot reply message in input_admin.c!\n");
         }
     }
 
@@ -341,9 +347,20 @@ int main(int argc, char* argv[]) {
                     fprintf(stderr, "Cannot receive message in input_admin.c!\n");
                     exit(0);
                 }
+                keyboard_pt = fromWhom;
+            }
+
+            reply.type = END;
+            if (Reply(keyboard_pt, &reply, sizeof(reply)) == -1) {
+                fprintf(stderr, "Cannot reply message in input_admin.c!\n");
             }
         }
         else{ //keyboard.input, keep receiving for another courier's end
+            reply.type = END;
+            if (Reply(fromWhom, &reply, sizeof(reply)) == -1) {
+                fprintf(stderr, "Cannot reply message in input_admin.c!\n");
+            }
+
             if (Receive(&fromWhom, &msg, sizeof(msg)) == -1) {
                 fprintf(stderr, "Cannot receive message in input_admin.c!\n");
                 exit(0);
@@ -355,10 +372,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    reply.type = END;
-    if (Reply(keyboard_pt, &reply, sizeof(reply)) == -1) {
-        fprintf(stderr, "Cannot reply message in input_admin.c!\n");
-    }
+    
 
     reply.type = OKAY;
     if (Reply(end_pt, &reply, sizeof(reply)) == -1) {

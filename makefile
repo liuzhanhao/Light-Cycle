@@ -21,7 +21,7 @@ timer: timer.o
 	${CC} $? -o $@ ${LDFLAGS}
 
 cycle: cycle.o
-	${CC} $? -o $@ ${LDFLAGS}
+	${CC} $? -o $@ ${LIBS} ${LDFLAGS}
 
 painter: painter.o
 	${CC} $? -o $@ ${LIBS} ${LDFLAGS}

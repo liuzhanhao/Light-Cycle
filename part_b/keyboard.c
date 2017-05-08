@@ -9,10 +9,13 @@
 
 
 int main(int argc, char* argv[]) {
-    int fd;
+    int fd, i;
     MESSAGE msg, reply;
 
-    char name[] = "keyboard";
+    char name[] = "Keyboard";
+
+    //FILE *f = fopen("file.txt", "w");
+    //setlinebuf(f);
 
     srand(time(NULL));
 
@@ -43,20 +46,36 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    /*
+
+    msg.type = KEYBOARD_INPUT;
+    // initialize the window
+    initscr();
+    nodelay(stdscr,TRUE);
+    cbreak(); // disable line buffering
+    noecho(); // keyboard inputs shouldn't be displayed
+    keypad(stdscr,TRUE);
+
     while (reply.type != END)
     {
-        // do sth
+        
+        for (i = 0; i < MAX_KEYS; i++){
+            msg.key[i] = getch();
+        }
+
         if (Send(fd, &msg, &reply, sizeof(msg), sizeof(reply)) == -1) {
             fprintf(stderr, "Cannot send message in painter.c!\n");
             exit(0);
         }
-    }*/
+    }
+
+    //endwin();
     
     if (name_detach() == -1) {
         fprintf(stderr, "Cannot detach PAINTER name!\n");
         exit(0);
     }
 
+    //fprintf(f, "end!\n");
+    //fclose(f);
     return 0;
 }
